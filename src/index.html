@@ -99,6 +99,10 @@
                 <span v-if="bill.frequency !== 'monthly'"
                   >({{ bill.frequency }})</span
                 >
+
+                <span v-if="bill.splitOption !== 'evenly'"
+                  >(Split: {{ bill.splitOption }})</span
+                >
               </td>
               <td align="right">
                 <button @click="removeBill(index)" class="btn btn-danger">
