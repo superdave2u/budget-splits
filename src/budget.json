@@ -5,16 +5,118 @@
   ],
   "bills": [
     {
-      "name": "Cleaners",
+      "name": "Car: Insurance",
+      "amount": 99.33,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Food: Costco Bulk",
+      "amount": 250,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Food: Costco Membership",
+      "amount": 10,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Food: Dining Out",
+      "amount": 150,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Food: Groceries",
       "amount": 300,
       "frequency": "monthly",
       "splitOption": "evenly"
     },
     {
-      "name": "Mortgage",
-      "amount": 4493.69,
+      "name": "General: Date Nights",
+      "amount": 300,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "General: Disney+",
+      "amount": 8,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "General: Home Goods",
+      "amount": 70,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "General: House Cleaning",
+      "amount": 300,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "General: Netflix",
+      "amount": 17,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Home Utilities: Internet",
+      "amount": 56,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Home: 211 Flood Insurance",
+      "amount": 82.92,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Home: 211 Mortgage",
+      "amount": 3120.41,
       "frequency": "monthly",
       "splitOption": "equitably"
+    },
+    {
+      "name": "Home: 211 Taxes, Insurance, etc",
+      "amount": 1381.19,
+      "frequency": "monthly",
+      "splitOption": "equitably"
+    },
+    {
+      "name": "Pets: Dog Food",
+      "amount": 145,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Pets: Dog Grooming",
+      "amount": 60,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Pets: Dog Insurance",
+      "amount": 46,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Pets: Dog Medication",
+      "amount": 165,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Tolls",
+      "amount": 50,
+      "frequency": "monthly",
+      "splitOption": "evenly"
     }
   ]
 }
