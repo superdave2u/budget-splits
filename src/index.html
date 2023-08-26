@@ -31,6 +31,11 @@
         <form @submit.prevent="addBill">
           <input type="text" v-model="newBill.name" placeholder="Bill Name" />
           <input type="number" v-model="newBill.amount" placeholder="Amount" />
+          <!-- Inside Add Bill Form -->
+          <select v-model="newBill.frequency" id="frequency">
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
           <label for="splitOption">Split Option:</label>
           <select v-model="newBill.splitOption" id="splitOption">
             <option value="evenly">Even</option>
@@ -89,7 +94,12 @@
           <tbody>
             <tr v-for="(bill, index) in household.bills">
               <td>{{ bill.name }}</td>
-              <td>${{ bill.amount }}</td>
+              <td>
+                ${{ bill.amount }}
+                <span v-if="bill.frequency !== 'monthly'"
+                  >({{ bill.frequency }})</span
+                >
+              </td>
               <td align="right">
                 <button @click="removeBill(index)" class="btn btn-danger">
                   Delete
@@ -157,13 +167,16 @@
 
         calculateContribution(bill, person) {
           let contribution = 0;
+          let adjustedAmount = bill.amount;
+          if (bill.frequency === "yearly") {
+            adjustedAmount = adjustedAmount / 12;
+          }
           if (this.totalIncome === 0) return 0; // Avoid division by zero
           if (bill.splitOption === "equitably") {
             contribution =
-              (Number(person.yearlySalary) / this.totalIncome) *
-              Number(bill.amount);
+              (Number(person.yearlySalary) / this.totalIncome) * adjustedAmount;
           } else if (bill.splitOption === "evenly") {
-            contribution = bill.amount / this.people.length;
+            contribution = adjustedAmount / this.people.length;
           } else if (bill.splitOption === "specific") {
             contribution = bill.payerName === person.name ? bill.amount : 0;
           }
@@ -186,7 +199,7 @@
               budget.regularCycle.push({
                 name: bill.name,
                 monthlyContribution: contribution.toFixed(2),
-                perPayContribution: (contribution / 2).toFixed(2), // Assuming bi-weekly payment
+                perPayContribution: (contribution / 2).toFixed(2),
               });
 
               budget.monthlyTotal += contribution;

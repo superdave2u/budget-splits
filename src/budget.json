@@ -42,8 +42,8 @@
     },
     {
       "name": "General: Disney+",
-      "amount": 8,
-      "frequency": "monthly",
+      "amount": 96,
+      "frequency": "yearly",
       "splitOption": "evenly"
     },
     {
