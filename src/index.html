@@ -43,21 +43,21 @@
       <hr />
       <!-- Total Household Income and Percent Contributions -->
       <div class="mb-4">
-        <h3>Total Household Income: ${{ totalIncome }}</h3>
         <table class="table">
           <thead>
             <tr>
               <th>Name</th>
               <th>Income</th>
-              <th>Percentage Contribution</th>
               <th>&nbsp;</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="person in household.people">
               <td>{{ person.name }}</td>
-              <td>${{ person.yearlySalary }}</td>
-              <td>{{ getIncomePercent(person.yearlySalary) }}%</td>
+              <td>
+                ${{ person.yearlySalary }} ({{
+                getIncomePercent(person.yearlySalary) }}%)
+              </td>
               <td align="right">
                 <button @click="removePerson(index)" class="btn btn-danger">
                   Delete
@@ -65,6 +65,13 @@
               </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr class="border-top fw-bold">
+              <td>&nbsp;</td>
+              <td>${{ totalIncome }}</td>
+              <td>&nbsp;</td>
+            </tr>
+          </tfoot>
         </table>
       </div>
 
