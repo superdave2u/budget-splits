@@ -6,9 +6,10 @@
   "bills": [
     {
       "name": "Car: Insurance",
-      "amount": 99.33,
-      "frequency": "monthly",
-      "splitOption": "evenly"
+      "amount": 1200,
+      "frequency": "yearly",
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-04-19"
     },
     {
       "name": "Food: Costco Bulk",
@@ -18,9 +19,10 @@
     },
     {
       "name": "Food: Costco Membership",
-      "amount": 10,
-      "frequency": "monthly",
-      "splitOption": "evenly"
+      "amount": 120,
+      "frequency": "yearly",
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-06-19"
     },
     {
       "name": "Food: Dining Out",
@@ -66,7 +68,7 @@
     },
     {
       "name": "Home Utilities: Internet",
-      "amount": 56,
+      "amount": 40,
       "frequency": "monthly",
       "splitOption": "evenly"
     },
@@ -102,9 +104,10 @@
     },
     {
       "name": "Pets: Dog Insurance",
-      "amount": 46,
-      "frequency": "monthly",
-      "splitOption": "evenly"
+      "amount": 960,
+      "frequency": "yearly",
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-08-19"
     },
     {
       "name": "Pets: Dog Medication",

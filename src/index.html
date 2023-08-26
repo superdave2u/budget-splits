@@ -133,7 +133,11 @@
                   />
                   <!-- Inside Add Bill Form -->
                   <select v-model="newBill.frequency" id="frequency">
+                    <option value="weekly">Weekly</option>
+                    <option value="bi-weekly">Bi-weekly</option>
                     <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="twice-yearly">Twice yearly</option>
                     <option value="yearly">Yearly</option>
                   </select>
                   <label for="splitOption">Split Option:</label>
@@ -141,6 +145,12 @@
                     <option value="evenly">Even</option>
                     <option value="equitably">Equitable</option>
                   </select>
+                  <input
+                    v-if="newBill.frequency !== 'monthly' && newBill.frequency !== 'bi-weekly' && newBill.frequency !== 'weekly'"
+                    type="date"
+                    v-model="newBill.nextBillingDate"
+                    placeholder="Next Billing Date"
+                  />
                   <button type="submit" class="btn btn-primary">Add</button>
                 </form>
               </div>
@@ -160,11 +170,10 @@
                     <tr v-for="(bill, index) in household.bills">
                       <td>{{ bill.name }}</td>
                       <td>
-                        ${{ bill.amount }}
-                        <span v-if="bill.frequency !== 'monthly'"
-                          >({{ bill.frequency }})</span
-                        >
-
+                        ${{ getAdjustedMonthlyAmount(bill) }}
+                        <span v-if="bill.frequency !== 'monthly'">
+                          (${{ bill.amount }} / {{ bill.frequency }})
+                        </span>
                         <span v-if="bill.splitOption !== 'evenly'"
                           >(Split: {{ bill.splitOption }})</span
                         >
@@ -250,7 +259,18 @@
           let adjustedAmount = bill.amount;
           if (bill.frequency === "yearly") {
             adjustedAmount = adjustedAmount / 12;
+          } else if (bill.frequency === "twice-yearly") {
+            adjustedAmount = adjustedAmount / 6;
+          } else if (bill.frequency === "quarterly") {
+            adjustedAmount = adjustedAmount / 3;
+          } else if (bill.frequency === "monthly") {
+            // pass
+          } else if (bill.frequency === "bi-weekly") {
+            adjustedAmount = adjustedAmount * 2;
+          } else if (bill.frequency === "weekly") {
+            adjustedAmount = adjustedAmount * 4;
           }
+
           if (this.totalIncome === 0) return 0; // Avoid division by zero
           if (bill.splitOption === "equitably") {
             contribution =
@@ -344,6 +364,23 @@
           },
         },
         methods: {
+          getAdjustedMonthlyAmount(bill) {
+            let adjustedAmount = bill.amount;
+            if (bill.frequency === "yearly") {
+              adjustedAmount = adjustedAmount / 12;
+            } else if (bill.frequency === "twice-yearly") {
+              adjustedAmount = adjustedAmount / 6;
+            } else if (bill.frequency === "quarterly") {
+              adjustedAmount = adjustedAmount / 3;
+            } else if (bill.frequency === "monthly") {
+              // pass
+            } else if (bill.frequency === "bi-weekly") {
+              adjustedAmount = adjustedAmount * 2;
+            } else if (bill.frequency === "weekly") {
+              adjustedAmount = adjustedAmount * 4;
+            }
+            return adjustedAmount.toFixed(2);
+          },
           removePerson(index) {
             this.household.people.splice(index, 1);
           },
