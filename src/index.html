@@ -31,6 +31,11 @@
         <form @submit.prevent="addBill">
           <input type="text" v-model="newBill.name" placeholder="Bill Name" />
           <input type="number" v-model="newBill.amount" placeholder="Amount" />
+          <label for="splitOption">Split Option:</label>
+          <select v-model="newBill.splitOption" id="splitOption">
+            <option value="evenly">Even</option>
+            <option value="equitably">Equitable</option>
+          </select>
           <button type="submit" class="btn btn-primary">Add</button>
         </form>
       </div>
