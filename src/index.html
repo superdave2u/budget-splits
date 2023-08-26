@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Household Budget Calculator</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app" class="container mt-4">
+      <h1>Household Budget Calculator</h1>
+
+      <!-- Add Person Form -->
+      <div class="mb-4">
+        <h3>Add Person</h3>
+        <form @submit.prevent="addPerson">
+          <input type="text" v-model="newPerson.name" placeholder="Name" />
+          <input
+            type="number"
+            v-model="newPerson.yearlySalary"
+            placeholder="Yearly Salary"
+          />
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+      </div>
+
+      <!-- Add Bill Form -->
+      <div class="mb-4">
+        <h3>Add Bill</h3>
+        <form @submit.prevent="addBill">
+          <input type="text" v-model="newBill.name" placeholder="Bill Name" />
+          <input type="number" v-model="newBill.amount" placeholder="Amount" />
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+      </div>
+
+      <hr />
+      <!-- Total Household Income and Percent Contributions -->
+      <div class="mb-4">
+        <h3>Total Household Income: ${{ totalIncome }}</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Income</th>
+              <th>Percentage Contribution</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="person in household.people">
+              <td>{{ person.name }}</td>
+              <td>${{ person.yearlySalary }}</td>
+              <td>{{ getIncomePercent(person.yearlySalary) }}%</td>
+              <td align="right">
+                <button @click="removePerson(index)" class="btn btn-danger">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Total Bills -->
+      <div class="mb-4">
+        <h3>Total Bills</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Bill Name</th>
+              <th>Amount</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(bill, index) in household.bills">
+              <td>{{ bill.name }}</td>
+              <td>${{ bill.amount }}</td>
+              <td align="right">
+                <button @click="removeBill(index)" class="btn btn-danger">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Budget Tables -->
+      <div v-for="budget in budgets">
+        <h3>Budget Table for {{ budget.name }}</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Bill Name</th>
+              <th>Per-Pay Period Contribution</th>
+              <th>Monthly Contribution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in budget.regularCycle">
+              <td>{{ item.name }}</td>
+              <td>${{ item.perPayContribution }}</td>
+              <td>${{ item.monthlyContribution }}</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>${{ budget.perPayTotal }}</td>
+              <td>${{ budget.monthlyTotal }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Vue and JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+      // Household Core - Center of the Onion
+      class Household {
+        constructor() {
+          this.people = [];
+          this.bills = [];
+        }
+
+        addPerson(name, yearlySalary, payFrequency) {
+          this.people.push({ name, yearlySalary, payFrequency });
+        }
+
+        addBill(name, amount, frequency, splitOption, payerName = null) {
+          this.bills.push({ name, amount, frequency, splitOption, payerName });
+        }
+
+        get totalIncome() {
+          if (this.people.length === 0) return 0;
+          return this.people.reduce(
+            (acc, person) => acc + (Number(person.yearlySalary) || 0),
+            0
+          );
+        }
+
+        calculateContribution(bill, person) {
+          let contribution = 0;
+          if (this.totalIncome === 0) return 0; // Avoid division by zero
+          if (bill.splitOption === "equitably") {
+            contribution =
+              (Number(person.yearlySalary) / this.totalIncome) *
+              Number(bill.amount);
+          } else if (bill.splitOption === "evenly") {
+            contribution = bill.amount / this.people.length;
+          } else if (bill.splitOption === "specific") {
+            contribution = bill.payerName === person.name ? bill.amount : 0;
+          }
+          return contribution;
+        }
+
+        getBudgetForPerson(person) {
+          const budget = {
+            name: person.name,
+            regularCycle: [],
+            thirdCycle: [],
+            monthlyTotal: 0,
+            perPayTotal: 0,
+          };
+
+          this.bills.forEach((bill) => {
+            const contribution = this.calculateContribution(bill, person);
+            budget.regularCycle.push({
+              name: bill.name,
+              monthlyContribution: contribution.toFixed(2),
+              perPayContribution: (contribution / 2).toFixed(2), // Assuming bi-weekly payment
+            });
+
+            budget.monthlyTotal += contribution;
+            budget.perPayTotal += contribution / 2;
+
+            if (bill.frequency !== "monthly") {
+              budget.thirdCycle.push({
+                name: bill.name,
+                contribution: contribution.toFixed(2),
+              });
+            }
+          });
+
+          budget.monthlyTotal = budget.monthlyTotal.toFixed(2);
+          budget.perPayTotal = budget.perPayTotal.toFixed(2);
+
+          return budget;
+        }
+      }
+
+      // Vue.js Application
+      new Vue({
+        el: "#app",
+        data: {
+          newPerson: {
+            name: "",
+            yearlySalary: 0,
+          },
+          newBill: {
+            name: "",
+            amount: 0,
+            frequency: "monthly",
+            splitOption: "evenly",
+          },
+          household: new Household(),
+        },
+        mounted() {
+          fetch("budget.json")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              this.household.people = data.people || [];
+              this.household.bills = data.bills || [];
+            })
+            .catch((err) => {
+              console.log("Failed to load budget, using default values:", err);
+              this.household.people = [];
+              this.household.bills = [];
+            });
+        },
+        computed: {
+          totalIncome() {
+            return this.household.totalIncome;
+          },
+          budgets() {
+            return this.household.people.map((person) =>
+              this.household.getBudgetForPerson(person)
+            );
+          },
+        },
+        methods: {
+          removePerson(index) {
+            this.household.people.splice(index, 1);
+          },
+          getIncomePercent(salary) {
+            return ((salary / this.totalIncome) * 100).toFixed(2);
+          },
+          addPerson() {
+            this.household.addPerson(
+              this.newPerson.name,
+              this.newPerson.yearlySalary,
+              "bi-weekly"
+            );
+            this.newPerson.name = "";
+            this.newPerson.yearlySalary = 0;
+          },
+          addBill() {
+            this.household.addBill(
+              this.newBill.name,
+              this.newBill.amount,
+              this.newBill.frequency,
+              this.newBill.splitOption
+            );
+            this.newBill.name = "";
+            this.newBill.amount = 0;
+          },
+          removeBill(index) {
+            this.household.bills.splice(index, 1);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

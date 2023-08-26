@@ -1,0 +1,20 @@
+{
+  "people": [
+    { "name": "Dave", "yearlySalary": 136000, "payFrequency": "bi-weekly" },
+    { "name": "Lisa", "yearlySalary": 227000, "payFrequency": "bi-weekly" }
+  ],
+  "bills": [
+    {
+      "name": "Cleaners",
+      "amount": 300,
+      "frequency": "monthly",
+      "splitOption": "evenly"
+    },
+    {
+      "name": "Mortgage",
+      "amount": 4493.69,
+      "frequency": "monthly",
+      "splitOption": "equitably"
+    }
+  ]
+}
