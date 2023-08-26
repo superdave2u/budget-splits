@@ -179,28 +179,29 @@
             perPayTotal: 0,
           };
 
-          this.bills.forEach((bill) => {
-            const contribution = this.calculateContribution(bill, person);
-            budget.regularCycle.push({
-              name: bill.name,
-              monthlyContribution: contribution.toFixed(2),
-              perPayContribution: (contribution / 2).toFixed(2), // Assuming bi-weekly payment
-            });
-
-            budget.monthlyTotal += contribution;
-            budget.perPayTotal += contribution / 2;
-
-            if (bill.frequency !== "monthly") {
-              budget.thirdCycle.push({
+          this.bills
+            .sort((a, b) => b.amount - a.amount)
+            .forEach((bill) => {
+              const contribution = this.calculateContribution(bill, person);
+              budget.regularCycle.push({
                 name: bill.name,
-                contribution: contribution.toFixed(2),
+                monthlyContribution: contribution.toFixed(2),
+                perPayContribution: (contribution / 2).toFixed(2), // Assuming bi-weekly payment
               });
-            }
-          });
+
+              budget.monthlyTotal += contribution;
+              budget.perPayTotal += contribution / 2;
+
+              if (bill.frequency !== "monthly") {
+                budget.thirdCycle.push({
+                  name: bill.name,
+                  contribution: contribution.toFixed(2),
+                });
+              }
+            });
 
           budget.monthlyTotal = budget.monthlyTotal.toFixed(2);
           budget.perPayTotal = budget.perPayTotal.toFixed(2);
-
           return budget;
         }
       }
@@ -244,9 +245,9 @@
             return this.household.totalIncome;
           },
           budgets() {
-            return this.household.people.map((person) =>
-              this.household.getBudgetForPerson(person)
-            );
+            return this.household.people
+              .map((person) => this.household.getBudgetForPerson(person))
+              .sort((a, b) => b.monthlyTotal - a.monthlyTotal);
           },
         },
         methods: {
