@@ -1,0 +1,48 @@
+<!-- Add Person Form -->
+<div class="mb-4">
+  <h3>Add Person</h3>
+  <form @submit.prevent="addPerson">
+    <input type="text" v-model="newPerson.name" placeholder="Name" />
+    <input
+      type="number"
+      v-model="newPerson.yearlySalary"
+      placeholder="Yearly Salary"
+    />
+    <button type="submit" class="btn btn-primary">Add</button>
+  </form>
+</div>
+
+<hr />
+<!-- Total Household Income and Percent Contributions -->
+<div class="mb-4">
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="col-6">Name</th>
+        <th class="col-4">Income</th>
+        <th class="col-2">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="person in household.people">
+        <td>{{ person.name }}</td>
+        <td>
+          ${{ person.yearlySalary }} ({{ getIncomePercent(person.yearlySalary)
+          }}%)
+        </td>
+        <td align="right">
+          <button @click="removePerson(index)" class="btn btn-danger">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr class="border-top fw-bold">
+        <td>&nbsp;</td>
+        <td>${{ totalIncome }}</td>
+        <td>&nbsp;</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

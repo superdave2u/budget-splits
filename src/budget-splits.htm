@@ -1,0 +1,28 @@
+<!-- Budget Tables -->
+<div v-for="(budget, index) in budgets">
+  <h3>Budget Splits for {{ budget.name }}</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="col-6">Bill Name</th>
+        <th class="col-3">Per-Pay</th>
+        <th class="col-3">Monthly</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="item in budget.regularCycle">
+        <td>{{ item.name }}</td>
+        <td>${{ item.perPayContribution }}</td>
+        <td>${{ item.monthlyContribution }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr class="border-top fw-bold">
+        <td>&nbsp;</td>
+        <td>${{ budget.perPayTotal }}</td>
+        <td>${{ budget.monthlyTotal }}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="page-break" v-if="index < budgets.length - 1"></div>
+</div>
