@@ -255,11 +255,24 @@
           },
           sortedBills() {
             return this.household.bills.sort((a, b) => {
-              const key = this.sortKey;
-              if (this.sortOrder === "asc") {
-                return a[key] > b[key] ? 1 : -1;
+              let valueA, valueB;
+
+              if (this.sortKey === "amount") {
+                valueA = parseFloat(this.getAdjustedMonthlyAmount(a));
+                valueB = parseFloat(this.getAdjustedMonthlyAmount(b));
               } else {
-                return a[key] < b[key] ? 1 : -1;
+                valueA = a[this.sortKey];
+                valueB = b[this.sortKey];
+              }
+
+              if (typeof valueA === "string") {
+                return this.sortOrder === "asc"
+                  ? valueA.localeCompare(valueB)
+                  : valueB.localeCompare(valueA);
+              } else {
+                return this.sortOrder === "asc"
+                  ? valueA - valueB
+                  : valueB - valueA;
               }
             });
           },
