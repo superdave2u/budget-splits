@@ -321,26 +321,24 @@
             perPayTotal: 0,
           };
 
-          this.bills
-            .sort((a, b) => b.amount - a.amount)
-            .forEach((bill) => {
-              const contribution = this.calculateContribution(bill, person);
-              budget.regularCycle.push({
-                name: bill.name,
-                monthlyContribution: contribution.toFixed(2),
-                perPayContribution: (contribution / 2).toFixed(2),
-              });
-
-              budget.monthlyTotal += contribution;
-              budget.perPayTotal += contribution / 2;
-
-              if (bill.frequency !== "monthly") {
-                budget.thirdCycle.push({
-                  name: bill.name,
-                  contribution: contribution.toFixed(2),
-                });
-              }
+          this.bills.forEach((bill) => {
+            const contribution = this.calculateContribution(bill, person);
+            budget.regularCycle.push({
+              name: bill.name,
+              monthlyContribution: contribution.toFixed(2),
+              perPayContribution: (contribution / 2).toFixed(2),
             });
+
+            budget.monthlyTotal += contribution;
+            budget.perPayTotal += contribution / 2;
+
+            if (bill.frequency !== "monthly") {
+              budget.thirdCycle.push({
+                name: bill.name,
+                contribution: contribution.toFixed(2),
+              });
+            }
+          });
 
           budget.monthlyTotal = budget.monthlyTotal.toFixed(2);
           budget.perPayTotal = budget.perPayTotal.toFixed(2);
