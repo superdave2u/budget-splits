@@ -162,6 +162,12 @@
           </table>
         </div>
       </div>
+      <textarea
+        id="jsonOutput"
+        rows="4"
+        class="form-control w-100"
+        readonly
+      ></textarea>
     </div>
 
     <!-- Vue and JavaScript -->
@@ -291,6 +297,7 @@
             .then((data) => {
               this.household.people = data.people || [];
               this.household.bills = data.bills || [];
+              this.updateJsonOutput();
             })
             .catch((err) => {
               console.log("Failed to load budget, using default values:", err);
@@ -342,6 +349,7 @@
             Vue.set(this.household.bills, this.editingIndex, this.editingBill);
             this.editingBill = null;
             this.editingIndex = -1;
+            this.updateJsonOutput();
           },
           cancelEdit() {
             this.editingBill = null;
@@ -401,6 +409,7 @@
           },
           removePerson(index) {
             this.household.people.splice(index, 1);
+            this.updateJsonOutput();
           },
           getIncomePercent(salary) {
             return ((salary / this.totalIncome) * 100).toFixed(2);
@@ -413,6 +422,7 @@
             );
             this.newPerson.name = "";
             this.newPerson.yearlySalary = 0;
+            this.updateJsonOutput();
           },
           addBill() {
             this.household.addBill(
@@ -423,9 +433,21 @@
             );
             this.newBill.name = "";
             this.newBill.amount = 0;
+            this.updateJsonOutput();
           },
           removeBill(index) {
             this.household.bills.splice(index, 1);
+            this.updateJsonOutput();
+          },
+          updateJsonOutput() {
+            document.getElementById("jsonOutput").value = JSON.stringify(
+              {
+                people: this.household.people,
+                bills: this.household.bills,
+              },
+              null,
+              2
+            );
           },
         },
       });
