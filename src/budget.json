@@ -1,7 +1,7 @@
 {
   "people": [
-    { "name": "Dave", "yearlySalary": 136000, "payFrequency": "bi-weekly" },
-    { "name": "Lisa", "yearlySalary": 227000, "payFrequency": "bi-weekly" }
+    { "name": "Dave", "yearlySalary": 132000, "payFrequency": "bi-weekly" },
+    { "name": "Lisa", "yearlySalary": 198000, "payFrequency": "bi-weekly" }
   ],
   "bills": [
     {
