@@ -39,6 +39,34 @@
       "splitOption": "evenly"
     },
     {
+      "name": "Disney Cruise Extras",
+      "amount": 1000,
+      "frequency": "yearly",
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-09-28"
+    },
+    {
+      "name": "Disney Cruise Pet Sitter",
+      "amount": 500,
+      "frequency": "yearly",
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-09-28"
+    },
+    {
+      "name": "Cape Cod Pet Sitter",
+      "amount": 500,
+      "frequency": "yearly",
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-06-28"
+    },
+    {
+      "name": "Solar Trip Pet Sitter",
+      "amount": 500,
+      "frequency": "yearly",
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-03-28"
+    },
+    {
       "name": "Food: Groceries",
       "amount": 300,
       "frequency": "monthly",
