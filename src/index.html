@@ -94,22 +94,69 @@
             </thead>
             <tbody>
               <tr v-for="(bill, index) in sortedBills">
-                <td>{{ bill.name }}</td>
-                <td>
-                  ${{ getAdjustedMonthlyAmount(bill) }}
-                  <span v-if="bill.frequency !== 'monthly'">
-                    (${{ bill.amount }} / {{ bill.frequency }} - should have
-                    ${{calculateSavedSoFar(bill)}} saved)
-                  </span>
-                  <span v-if="bill.splitOption !== 'evenly'"
-                    >(Split: {{ bill.splitOption }})</span
-                  >
-                </td>
-                <td align="right">
-                  <button @click="removeBill(index)" class="btn btn-danger">
-                    Delete
-                  </button>
-                </td>
+                <template v-if="editingIndex !== index">
+                  <td>{{ bill.name }}</td>
+                  <td>
+                    ${{ getAdjustedMonthlyAmount(bill) }}
+                    <span v-if="bill.frequency !== 'monthly'">
+                      (${{ bill.amount }} / {{ bill.frequency }} - should have
+                      ${{calculateSavedSoFar(bill)}} saved)
+                    </span>
+                    <span v-if="bill.splitOption !== 'evenly'"
+                      >(Split: {{ bill.splitOption }})</span
+                    >
+                  </td>
+                  <td align="right">
+                    <button
+                      @click="startEditing(index)"
+                      class="btn btn-secondary"
+                    >
+                      Edit
+                    </button>
+                    <button @click="removeBill(index)" class="btn btn-danger">
+                      Delete
+                    </button>
+                  </td>
+                </template>
+                <template v-else>
+                  <!-- input fields go here -->
+                  <td><input type="text" v-model="editingBill.name" /></td>
+                  <td>
+                    <input
+                      type="number"
+                      v-model="editingBill.amount"
+                      placeholder="Amount"
+                    />
+                    <!-- Inside Add Bill Form -->
+                    <select v-model="editingBill.frequency" id="frequency">
+                      <option value="weekly">Weekly</option>
+                      <option value="bi-weekly">Bi-weekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="twice-yearly">Twice yearly</option>
+                      <option value="yearly">Yearly</option>
+                    </select>
+                    <label for="splitOption">Split Option:</label>
+                    <select v-model="editingBill.splitOption" id="splitOption">
+                      <option value="evenly">Even</option>
+                      <option value="equitably">Equitable</option>
+                    </select>
+                    <input
+                      v-if="editingBill.frequency !== 'monthly' && editingBill.frequency !== 'bi-weekly' && editingBill.frequency !== 'weekly'"
+                      type="date"
+                      v-model="editingBill.nextBillingDate"
+                      placeholder="Next Billing Date"
+                    />
+                  </td>
+                  <td align="right">
+                    <button @click="saveEdit" class="btn btn-success">
+                      Save
+                    </button>
+                    <button @click="cancelEdit" class="btn btn-warning">
+                      Cancel
+                    </button>
+                  </td>
+                </template>
               </tr>
             </tbody>
           </table>
@@ -212,6 +259,13 @@
       new Vue({
         el: "#app",
         data: {
+          editingBill: {
+            name: "",
+            amount: 0,
+            frequency: "",
+            splitOption: "",
+          },
+          editingIndex: -1,
           newPerson: {
             name: "",
             yearlySalary: 0,
@@ -278,6 +332,21 @@
           },
         },
         methods: {
+          startEditing(index) {
+            this.editingBill = JSON.parse(
+              JSON.stringify(this.household.bills[index])
+            );
+            this.editingIndex = index;
+          },
+          saveEdit() {
+            Vue.set(this.household.bills, this.editingIndex, this.editingBill);
+            this.editingBill = null;
+            this.editingIndex = -1;
+          },
+          cancelEdit() {
+            this.editingBill = null;
+            this.editingIndex = -1;
+          },
           calculateSavedSoFar(bill) {
             let savedSoFar = 0;
             let today = new Date();
