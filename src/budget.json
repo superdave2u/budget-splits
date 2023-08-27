@@ -54,7 +54,8 @@
       "name": "General: Disney+",
       "amount": 96,
       "frequency": "yearly",
-      "splitOption": "evenly"
+      "splitOption": "evenly",
+      "nextBillingDate": "2024-01-24"
     },
     {
       "name": "General: Home Goods",
