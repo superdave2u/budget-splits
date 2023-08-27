@@ -30,158 +30,124 @@
   <body>
     <div id="app" class="container mt-4">
       <div class="row">
-        <!-- Add Person Form -->
-        <div class="mb-4">
-          <h3>Add Person</h3>
-          <form @submit.prevent="addPerson">
-            <input type="text" v-model="newPerson.name" placeholder="Name" />
-            <input
-              type="number"
-              v-model="newPerson.yearlySalary"
-              placeholder="Yearly Salary"
-            />
-            <button type="submit" class="btn btn-primary">Add</button>
-          </form>
+        <!-- Sidebar -->
+        <div class="col-3">
+          <div class="list-group">
+            <a
+              href="#people"
+              class="list-group-item list-group-item-action"
+              id="people-tab"
+              data-bs-toggle="tab"
+              role="tab"
+              >People</a
+            >
+            <a
+              href="#bills"
+              class="list-group-item list-group-item-action"
+              id="bills-tab"
+              data-bs-toggle="tab"
+              role="tab"
+              >Bills</a
+            >
+            <a
+              href="#budgets"
+              class="list-group-item list-group-item-action"
+              id="budgets-tab"
+              data-bs-toggle="tab"
+              role="tab"
+              >Budgets</a
+            >
+            <a
+              href="#export"
+              class="list-group-item list-group-item-action"
+              id="export-tab"
+              data-bs-toggle="tab"
+              role="tab"
+              >Export</a
+            >
+          </div>
         </div>
 
-        <!-- Total Household Income and Percent Contributions -->
-        <div class="mb-4">
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="col-6">Name</th>
-                <th class="col-4">Income</th>
-                <th class="col-2">&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="person in household.people">
-                <td>{{ person.name }}</td>
-                <td>
-                  ${{ person.yearlySalary }} ({{
-                  getIncomePercent(person.yearlySalary) }}%)
-                </td>
-                <td align="right">
-                  <button @click="removePerson(index)" class="btn btn-danger">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr class="border-top fw-bold">
-                <td>&nbsp;</td>
-                <td>${{ totalIncome }}</td>
-                <td>&nbsp;</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
+        <!-- Main Content -->
+        <div class="col-9">
+          <div class="tab-content">
+            <!-- People Tab -->
+            <div class="tab-pane fade" id="people" role="tabpanel">
+              <!-- Add Person Form -->
+              <div class="mb-4">
+                <h3>Add Person</h3>
+                <form @submit.prevent="addPerson">
+                  <input
+                    type="text"
+                    v-model="newPerson.name"
+                    placeholder="Name"
+                  />
+                  <input
+                    type="number"
+                    v-model="newPerson.yearlySalary"
+                    placeholder="Yearly Salary"
+                  />
+                  <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+              </div>
 
-      <div class="row">
-        <!-- Add Bill Form -->
-        <div class="mb-4">
-          <h3>Add Bill</h3>
-          <form @submit.prevent="addBill">
-            <input type="text" v-model="newBill.name" placeholder="Bill Name" />
-            <input
-              type="number"
-              v-model="newBill.amount"
-              placeholder="Amount"
-            />
-            <!-- Inside Add Bill Form -->
-            <select v-model="newBill.frequency" id="frequency">
-              <option value="weekly">Weekly</option>
-              <option value="bi-weekly">Bi-weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="twice-yearly">Twice yearly</option>
-              <option value="yearly">Yearly</option>
-            </select>
-            <label for="splitOption">Split Option:</label>
-            <select v-model="newBill.splitOption" id="splitOption">
-              <option value="evenly">Even</option>
-              <option value="equitably">Equitable</option>
-            </select>
-            <input
-              v-if="newBill.frequency !== 'monthly' && newBill.frequency !== 'bi-weekly' && newBill.frequency !== 'weekly'"
-              type="date"
-              v-model="newBill.nextBillingDate"
-              placeholder="Next Billing Date"
-            />
-            <button type="submit" class="btn btn-primary">Add</button>
-          </form>
-        </div>
+              <!-- Total Household Income and Percent Contributions -->
+              <div class="mb-4">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="col-6">Name</th>
+                      <th class="col-4">Income</th>
+                      <th class="col-2">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="person in household.people">
+                      <td>{{ person.name }}</td>
+                      <td>
+                        ${{ person.yearlySalary }} ({{
+                        getIncomePercent(person.yearlySalary) }}%)
+                      </td>
+                      <td align="right">
+                        <button
+                          @click="removePerson(index)"
+                          class="btn btn-danger"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr class="border-top fw-bold">
+                      <td>&nbsp;</td>
+                      <td>${{ totalIncome }}</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
 
-        <!-- Bills -->
-        <div class="mb-4">
-          <h3>Bill List</h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="col-6" @click="updateSort('name')">
-                  Bill Name
-                  <i
-                    v-if="sortKey === 'name' && sortOrder === 'asc'"
-                    class="bi bi-arrow-up"
-                  ></i>
-                  <i
-                    v-if="sortKey === 'name' && sortOrder === 'desc'"
-                    class="bi bi-arrow-down"
-                  ></i>
-                </th>
-                <th class="col-4" @click="updateSort('amount')">
-                  Amount
-                  <i
-                    v-if="sortKey === 'amount' && sortOrder === 'asc'"
-                    class="bi bi-arrow-up"
-                  ></i>
-                  <i
-                    v-if="sortKey === 'amount' && sortOrder === 'desc'"
-                    class="bi bi-arrow-down"
-                  ></i>
-                </th>
-                <th class="col-2">&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(bill, index) in sortedBills">
-                <template v-if="editingIndex !== index">
-                  <td>{{ bill.name }}</td>
-                  <td>
-                    ${{ getAdjustedMonthlyAmount(bill) }}
-                    <span v-if="bill.frequency !== 'monthly'">
-                      (${{ bill.amount }} / {{ bill.frequency }} - should have
-                      ${{calculateSavedSoFar(bill)}} saved)
-                    </span>
-                    <span v-if="bill.splitOption !== 'evenly'"
-                      >(Split: {{ bill.splitOption }})</span
-                    >
-                  </td>
-                  <td align="right">
-                    <button
-                      @click="startEditing(index)"
-                      class="btn btn-secondary"
-                    >
-                      Edit
-                    </button>
-                    <button @click="removeBill(index)" class="btn btn-danger">
-                      Delete
-                    </button>
-                  </td>
-                </template>
-                <template v-else>
-                  <!-- input fields go here -->
-                  <td><input type="text" v-model="editingBill.name" /></td>
-                  <td>
+            <!-- Bills Tab -->
+            <div class="tab-pane fade" id="bills" role="tabpanel">
+              <div class="row">
+                <!-- Add Bill Form -->
+                <div class="mb-4">
+                  <h3>Add Bill</h3>
+                  <form @submit.prevent="addBill">
+                    <input
+                      type="text"
+                      v-model="newBill.name"
+                      placeholder="Bill Name"
+                    />
                     <input
                       type="number"
-                      v-model="editingBill.amount"
+                      v-model="newBill.amount"
                       placeholder="Amount"
                     />
                     <!-- Inside Add Bill Form -->
-                    <select v-model="editingBill.frequency" id="frequency">
+                    <select v-model="newBill.frequency" id="frequency">
                       <option value="weekly">Weekly</option>
                       <option value="bi-weekly">Bi-weekly</option>
                       <option value="monthly">Monthly</option>
@@ -190,70 +156,182 @@
                       <option value="yearly">Yearly</option>
                     </select>
                     <label for="splitOption">Split Option:</label>
-                    <select v-model="editingBill.splitOption" id="splitOption">
+                    <select v-model="newBill.splitOption" id="splitOption">
                       <option value="evenly">Even</option>
                       <option value="equitably">Equitable</option>
                     </select>
                     <input
-                      v-if="editingBill.frequency !== 'monthly' && editingBill.frequency !== 'bi-weekly' && editingBill.frequency !== 'weekly'"
+                      v-if="newBill.frequency !== 'monthly' && newBill.frequency !== 'bi-weekly' && newBill.frequency !== 'weekly'"
                       type="date"
-                      v-model="editingBill.nextBillingDate"
+                      v-model="newBill.nextBillingDate"
                       placeholder="Next Billing Date"
                     />
-                  </td>
-                  <td align="right">
-                    <button @click="saveEdit" class="btn btn-success">
-                      Save
-                    </button>
-                    <button @click="cancelEdit" class="btn btn-warning">
-                      Cancel
-                    </button>
-                  </td>
-                </template>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                  </form>
+                </div>
 
-      <div class="row">
-        <!-- Budget Tables -->
-        <div v-for="(budget, index) in budgets">
-          <h3>Budget Splits for {{ budget.name }}</h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="col-6">Bill Name</th>
-                <th class="col-3">Per-Pay</th>
-                <th class="col-3">Monthly</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in budget.regularCycle">
-                <td>{{ item.name }}</td>
-                <td>${{ item.perPayContribution }}</td>
-                <td>${{ item.monthlyContribution }}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr class="border-top fw-bold">
-                <td>&nbsp;</td>
-                <td>${{ budget.perPayTotal }}</td>
-                <td>${{ budget.monthlyTotal }}</td>
-              </tr>
-            </tfoot>
-          </table>
-          <div class="page-break" v-if="index < budgets.length - 1"></div>
-        </div>
-      </div>
+                <!-- Total Bills -->
+                <div class="mb-4">
+                  <h3>Total Bills</h3>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="col-6" @click="updateSort('name')">
+                          Bill Name
+                          <i
+                            v-if="sortKey === 'name' && sortOrder === 'asc'"
+                            class="bi bi-arrow-up"
+                          ></i>
+                          <i
+                            v-if="sortKey === 'name' && sortOrder === 'desc'"
+                            class="bi bi-arrow-down"
+                          ></i>
+                        </th>
+                        <th class="col-4" @click="updateSort('amount')">
+                          Amount
+                          <i
+                            v-if="sortKey === 'amount' && sortOrder === 'asc'"
+                            class="bi bi-arrow-up"
+                          ></i>
+                          <i
+                            v-if="sortKey === 'amount' && sortOrder === 'desc'"
+                            class="bi bi-arrow-down"
+                          ></i>
+                        </th>
+                        <th class="col-2">&nbsp;</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(bill, index) in sortedBills">
+                        <template v-if="editingIndex !== index">
+                          <td>{{ bill.name }}</td>
+                          <td>
+                            ${{ getAdjustedMonthlyAmount(bill) }}
+                            <span v-if="bill.frequency !== 'monthly'">
+                              (${{ bill.amount }} / {{ bill.frequency }} -
+                              should have ${{calculateSavedSoFar(bill)}} saved)
+                            </span>
+                            <span v-if="bill.splitOption !== 'evenly'"
+                              >(Split: {{ bill.splitOption }})</span
+                            >
+                          </td>
+                          <td align="right">
+                            <button
+                              @click="startEditing(index)"
+                              class="btn btn-secondary"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              @click="removeBill(index)"
+                              class="btn btn-danger"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </template>
+                        <template v-else>
+                          <!-- input fields go here -->
+                          <td>
+                            <input type="text" v-model="editingBill.name" />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              v-model="editingBill.amount"
+                              placeholder="Amount"
+                            />
+                            <!-- Inside Add Bill Form -->
+                            <select
+                              v-model="editingBill.frequency"
+                              id="frequency"
+                            >
+                              <option value="weekly">Weekly</option>
+                              <option value="bi-weekly">Bi-weekly</option>
+                              <option value="monthly">Monthly</option>
+                              <option value="quarterly">Quarterly</option>
+                              <option value="twice-yearly">Twice yearly</option>
+                              <option value="yearly">Yearly</option>
+                            </select>
+                            <label for="splitOption">Split Option:</label>
+                            <select
+                              v-model="editingBill.splitOption"
+                              id="splitOption"
+                            >
+                              <option value="evenly">Even</option>
+                              <option value="equitably">Equitable</option>
+                            </select>
+                            <input
+                              v-if="editingBill.frequency !== 'monthly' && editingBill.frequency !== 'bi-weekly' && editingBill.frequency !== 'weekly'"
+                              type="date"
+                              v-model="editingBill.nextBillingDate"
+                              placeholder="Next Billing Date"
+                            />
+                          </td>
+                          <td align="right">
+                            <button @click="saveEdit" class="btn btn-success">
+                              Save
+                            </button>
+                            <button @click="cancelEdit" class="btn btn-warning">
+                              Cancel
+                            </button>
+                          </td>
+                        </template>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
 
-      <div class="row">
-        <textarea
-          id="jsonOutput"
-          rows="4"
-          class="form-control w-100"
-          readonly
-        ></textarea>
+            <!-- Budgets Tab -->
+            <div class="tab-pane fade" id="budgets" role="tabpanel">
+              <div class="row">
+                <!-- Budget Tables -->
+                <div v-for="(budget, index) in budgets">
+                  <h3>Budget Splits for {{ budget.name }}</h3>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="col-6">Bill Name</th>
+                        <th class="col-3">Per-Pay</th>
+                        <th class="col-3">Monthly</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in budget.regularCycle">
+                        <td>{{ item.name }}</td>
+                        <td>${{ item.perPayContribution }}</td>
+                        <td>${{ item.monthlyContribution }}</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr class="border-top fw-bold">
+                        <td>&nbsp;</td>
+                        <td>${{ budget.perPayTotal }}</td>
+                        <td>${{ budget.monthlyTotal }}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  <div
+                    class="page-break"
+                    v-if="index < budgets.length - 1"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="export" role="tabpanel">
+              <div class="row">
+                <textarea
+                  id="jsonOutput"
+                  rows="20"
+                  class="form-control w-100"
+                  readonly
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
