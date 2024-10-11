@@ -4,11 +4,11 @@
         <v-list-item link :to="{ path: '/' }">
             <v-list-item-title>Home</v-list-item-title>
         </v-list-item>
-        <v-list-item link :to="{ path: '/budgets' }">
-            <v-list-item-title>Budgets</v-list-item-title>
-        </v-list-item>
         <v-list-item link :to="{ path: '/bills' }">
             <v-list-item-title>Bills</v-list-item-title>
+        </v-list-item>
+        <v-list-item link :to="{ path: '/budgets' }">
+            <v-list-item-title>Budgets</v-list-item-title>
         </v-list-item>
         <v-list-item link :to="{ path: '/people' }">
             <v-list-item-title>People</v-list-item-title>
