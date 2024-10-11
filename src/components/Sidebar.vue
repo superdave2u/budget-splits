@@ -13,8 +13,8 @@
         <v-list-item link :to="{ path: '/people' }">
             <v-list-item-title>People</v-list-item-title>
         </v-list-item>
-        <v-list-item link :to="{ path: '/export' }">
-            <v-list-item-title>Export</v-list-item-title>
+        <v-list-item link :to="{ path: '/data' }">
+            <v-list-item-title>Data</v-list-item-title>
         </v-list-item>
     </v-list>
 </template>
