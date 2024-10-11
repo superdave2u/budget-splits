@@ -8,46 +8,54 @@
             <v-btn type="submit" color="primary">Add</v-btn>
         </v-form>
 
-        <v-simple-table class="mt-4">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Income</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(person, index) in householdStore.people" :key="index">
-                    <td>{{ person.name }}</td>
-                    <td>
-                        ${{ person.yearlySalary }} ({{ getIncomePercent(person.yearlySalary) }}%)
-                    </td>
-                    <td class="text-right">
-                        <v-btn icon @click="removePerson(index)">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
+        <v-data-table :headers="headers" :items="householdStore.people" class="mt-4" :hide-default-footer="true">
+            <!-- Customize Header Cells -->
+            <template v-slot:header.name="{ column }">
+                <v-icon small class="mr-1">{{ column.icon }}</v-icon>
+                <span v-if="!mobile">{{ column.text }}</span>
+            </template>
+            <template v-slot:header.income="{ column }">
+                <v-icon small class="mr-1">{{ column.icon }}</v-icon>
+                <span v-if="!mobile">{{ column.text }}</span>
+            </template>
+            <template v-slot:header.actions="{ column }">
+                <v-icon small class="mr-1">{{ column.icon }}</v-icon>
+                <span v-if="!mobile">{{ column.text }}</span>
+            </template>
+
+            <!-- Customize Item Cells -->
+            <template v-slot:item.income="{ item }">
+                {{ formatCurrency(item.yearlySalary) }}
+                ({{ getIncomePercent(item.yearlySalary) }}%)
+            </template>
+            <template v-slot:item.actions="{ item, index }">
+                <v-btn icon @click="removePerson(index)">
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
+
+            <!-- Footer Slot for Totals -->
+            <template v-slot:body.append>
                 <tr class="font-weight-bold">
                     <td>Total</td>
-                    <td>${{ householdStore.totalIncome }}</td>
+                    <td>{{ formatCurrency(householdStore.totalIncome) }}</td>
                     <td></td>
                 </tr>
-            </tfoot>
-        </v-simple-table>
+            </template>
+        </v-data-table>
     </v-container>
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useHouseholdStore } from '@/stores/household';
+import { useDisplay } from 'vuetify';
 
 export default {
     name: 'People',
     setup() {
         const householdStore = useHouseholdStore();
+        const { mobile } = useDisplay();
 
         const newPerson = ref({
             name: '',
@@ -70,17 +78,55 @@ export default {
             return total > 0 ? ((salary / total) * 100).toFixed(2) : '0.00';
         };
 
+        const formatCurrency = (value) => {
+            if (!value) return '';
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            }).format(value);
+        };
+
+        const headers = [
+            {
+                text: 'Name',
+                value: 'name',
+                icon: 'mdi-account',
+                sortable: false,
+            },
+            {
+                text: 'Income',
+                value: 'income',
+                icon: 'mdi-currency-usd',
+                sortable: false,
+            },
+            {
+                text: 'Actions',
+                value: 'actions',
+                icon: 'mdi-tools',
+                sortable: false,
+            },
+        ];
+
         return {
             newPerson,
             addPerson,
             removePerson,
             householdStore,
             getIncomePercent,
+            formatCurrency,
+            headers,
+            mobile,
         };
     },
 };
 </script>
 
 <style scoped>
-/* Add any styles if necessary */
+.mt-8 {
+    margin-top: 2rem;
+}
+
+.font-weight-bold {
+    font-weight: bold;
+}
 </style>
