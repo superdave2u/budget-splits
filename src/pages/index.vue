@@ -3,11 +3,26 @@
   <v-container>
     <h2>Household Members</h2>
     <v-data-table :headers="headers" :items="peopleBudgets" class="mt-4" :hide-default-footer="true">
-      <template v-slot:item.name="{ item }">
-        {{ item.name }}
+      <!-- Customize Header Cells -->
+      <template v-slot:header.name="{ column }">
+        <v-icon small class="mr-1">{{ column.icon }}</v-icon>
+        <span v-if="!mobile">{{ column.text }}</span>
       </template>
-      <template v-slot:item.perPayTotal="{ item }">
-        {{ formatCurrency(item.perPayTotal) }}
+      <template v-slot:header.weeklyTotal="{ column }">
+        <v-icon small class="mr-1">{{ column.icon }}</v-icon>
+        <span v-if="!mobile">{{ column.text }}</span>
+      </template>
+      <template v-slot:header.monthlyTotal="{ column }">
+        <v-icon small class="mr-1">{{ column.icon }}</v-icon>
+        <span v-if="!mobile">{{ column.text }}</span>
+      </template>
+
+      <!-- Customize Item Cells -->
+      <template v-slot:item.name="{ item }">
+        <strong>{{ item.name }}</strong>
+      </template>
+      <template v-slot:item.weeklyTotal="{ item }">
+        {{ formatCurrency(item.weeklyTotal) }}
       </template>
       <template v-slot:item.monthlyTotal="{ item }">
         {{ formatCurrency(item.monthlyTotal) }}
@@ -19,11 +34,13 @@
 <script>
 import { computed } from 'vue';
 import { useHouseholdStore } from '@/stores/household';
+import { useDisplay } from 'vuetify';
 
 export default {
   name: 'Home',
   setup() {
     const householdStore = useHouseholdStore();
+    const { mobile } = useDisplay();
 
     const totalIncome = computed(() => householdStore.totalIncome);
 
@@ -65,18 +82,18 @@ export default {
 
     const getTotalsForPerson = (person) => {
       let monthlyTotal = 0;
-      let perPayTotal = 0;
+      let weeklyTotal = 0;
 
       householdStore.bills.forEach((bill) => {
         const contribution = calculateContribution(bill, person);
         monthlyTotal += contribution;
-        perPayTotal += contribution / 2;
+        weeklyTotal += contribution / 4; // Assuming 4 weeks in a month
       });
 
       return {
         id: person.id,
         name: person.name,
-        perPayTotal: perPayTotal.toFixed(2),
+        weeklyTotal: weeklyTotal.toFixed(2),
         monthlyTotal: monthlyTotal.toFixed(2),
       };
     };
@@ -86,9 +103,24 @@ export default {
     );
 
     const headers = [
-      { text: 'Name', value: 'name', sortable: false },
-      { text: 'Per-Pay Total', value: 'perPayTotal', sortable: false },
-      { text: 'Monthly Total', value: 'monthlyTotal', sortable: false },
+      {
+        text: 'Name',
+        value: 'name',
+        icon: 'mdi-account',
+        sortable: false,
+      },
+      {
+        text: 'Weekly',
+        value: 'weeklyTotal',
+        icon: 'mdi-calendar-week',
+        sortable: false,
+      },
+      {
+        text: 'Monthly',
+        value: 'monthlyTotal',
+        icon: 'mdi-calendar-month',
+        sortable: false,
+      },
     ];
 
     const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -104,6 +136,7 @@ export default {
       peopleBudgets,
       headers,
       formatCurrency,
+      mobile,
     };
   },
 };
