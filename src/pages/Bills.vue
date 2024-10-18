@@ -38,11 +38,11 @@
             </template>
 
             <!-- Actions -->
-            <template v-slot:item.actions="{ item, index }">
-                <v-btn icon @click="editBill(index)">
+            <template v-slot:item.actions="{ item }">
+                <v-btn icon @click="editBill(item.id)">
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn icon @click="removeBill(index)">
+                <v-btn icon @click="removeBill(item.id)">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
             </template>
@@ -95,6 +95,7 @@ export default {
         const splitOptions = ['evenly', 'equitably'];
 
         const newBill = ref({
+            id: Date.now(),
             name: '',
             amount: null,
             frequency: 'monthly',
@@ -103,8 +104,9 @@ export default {
 
         const addBill = () => {
             if (newBill.value.name && newBill.value.amount > 0) {
-                householdStore.addBill({ ...newBill.value });
+                householdStore.addBill({ ...newBill.value, id: Date.now() });
                 newBill.value = {
+                    id: Date.now(),
                     name: '',
                     amount: null,
                     frequency: 'monthly',
@@ -113,19 +115,26 @@ export default {
             }
         };
 
-        const removeBill = (index) => {
-            householdStore.removeBill(index);
-        };
-
         const editDialog = ref(false);
         const editingIndex = ref(null);
         const editingBill = ref({});
 
-        const editBill = (index) => {
-            editingIndex.value = index;
-            editingBill.value = { ...householdStore.bills[index] };
-            editDialog.value = true;
+        const removeBill = (id) => {
+            const index = householdStore.bills.findIndex((bill) => bill.id === id);
+            if (index !== -1) {
+                householdStore.removeBill(index);
+            }
         };
+
+        const editBill = (id) => {
+            const index = householdStore.bills.findIndex((bill) => bill.id === id);
+            if (index !== -1) {
+                editingIndex.value = index;
+                editingBill.value = { ...householdStore.bills[index] };
+                editDialog.value = true;
+            }
+        };
+
 
         const saveEdit = () => {
             householdStore.updateBill(editingIndex.value, editingBill.value);
